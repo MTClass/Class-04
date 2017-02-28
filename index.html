@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>class 3 - states<style id="jsbin-css">
+* basic positioning */
+.legend { list-style: none; }
+.legend li { float: left; margin-right: 10px; }
+.legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+/* your colors */
+.legend .Deadly { background-color: crimson; }
+.legend .High { background-color: yellow; }
+.legend .Medium { background-color: blue; }
+.legend .Low { background-color: green; }
+</style>
+</title>
+<h3> Weekly Earthquake Data </h3>
+<style>
+body {
+  position: absolute;
+  margin: 0px;
+}
+svg {
+  background-color: #4682b4;
+}
+.info {
+  font-family: sans-serif;
+  color: #000;
+  position: absolute;
+  top: 450px;
+  left: 800px;
+}
+path {
+  fill: #555555;
+  stroke: #aaaaaa;
+}
+</style>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+
+<body>
+<script>
+var width = 960, height = 500;
+var data;  // declare a global variable
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mousemove", mousemoved);
+var layer = svg.append('g');
+var layer2 = svg.append('g');
+var info = d3.select("body").append("div")
+    .attr("class", "info");
+var projection = d3.geoAlbersUsa();
+var path = d3.geoPath()
+    .projection(projection);
+  
+var pathQuake = d3.geoPath()
+    .pointRadius(5)
+    .projection(projection);
+var usgs = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+  d3.json(usgs, plotQuakes);  
+  function plotQuakes(error, data) {
+  if (error) console.log(error);
+  
+  // Filter the small earthquakes
+  var features = data.features;
+  // Plot the earthquakes
+  layer2.selectAll("path.quake")
+      .data(features)
+    .enter().append("path")
+      .attr("class", "quake")
+  .style('fill','crimson')
+      .attr("d", path)
+}
+  
+// If you use this URL, you won't need your own copy of the data.
+var url = "https://umbcvis.github.io/classes/class-03/us.json"
+  
+  
+  
+  
+d3.json(url, plotStates);
+function plotStates(error, json) {
+  // Create array of GeoJSON features -- this defines the global variable "data"
+  data = json.objects.us.geometries.map(function(d) { return topojson.feature(json, d); })
+  // Put your code here
+  // Plot the features
+  layer.selectAll("path")
+      .data(data)
+    .enter()
+      .append("path")
+      .attr("d", path);
+}
+function mousemoved() {
+  info.text(formatLocation(projection.invert(d3.mouse(this)), projection.scale()));
+}
+function formatLocation(p, k) {
+  var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
+  return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
+       + (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
+}
+</script>
+<ul class="legend">
+    <li><span class="Deadly"></span> deadly</li>
+    <li><span class="High"></span> high</li>
+    <li><span class="Medium"></span> medium</li>
+    <li><span class="Low"></span> low</li>
+</ul>
+<script id="jsbin-source-html" type="text/html"><!DOCTYPE html>
+<meta charset="utf-8">
+<title>class 3 - states</title>
+<h3> Weekly Earthquake Data </h3>
+<style>
+body {
+  position: absolute;
+  margin: 0px;
+}
+svg {
+  background-color: #4682b4;
+}
+.info {
+  font-family: sans-serif;
+  color: #000;
+  position: absolute;
+  top: 450px;
+  left: 800px;
+}
+path {
+  fill: #555555;
+  stroke: #aaaaaa;
+}
+</style>
+
+<script src="https://d3js.org/d3.v4.min.js"><\/script>
+<script src="https://d3js.org/topojson.v2.min.js"><\/script>
+<body>
+<script>
+var width = 960, height = 500;
+var data;  // declare a global variable
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mousemove", mousemoved);
+var layer = svg.append('g');
+var layer2 = svg.append('g');
+var info = d3.select("body").append("div")
+    .attr("class", "info");
+var projection = d3.geoAlbersUsa();
+var path = d3.geoPath()
+    .projection(projection);
+  
+var pathQuake = d3.geoPath()
+    .pointRadius(5)
+    .projection(projection);
+var usgs = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
+  d3.json(usgs, plotQuakes);  
+  function plotQuakes(error, data) {
+  if (error) console.log(error);
+  
+  // Filter the small earthquakes
+  var features = data.features;
+  // Plot the earthquakes
+  layer2.selectAll("path.quake")
+      .data(features)
+    .enter().append("path")
+      .attr("class", "quake")
+  .style('fill','crimson')
+      .attr("d", path)
+}
+  
+// If you use this URL, you won't need your own copy of the data.
+var url = "https://umbcvis.github.io/classes/class-03/us.json"
+  
+  
+  
+  
+d3.json(url, plotStates);
+function plotStates(error, json) {
+  // Create array of GeoJSON features -- this defines the global variable "data"
+  data = json.objects.us.geometries.map(function(d) { return topojson.feature(json, d); })
+  // Put your code here
+  // Plot the features
+  layer.selectAll("path")
+      .data(data)
+    .enter()
+      .append("path")
+      .attr("d", path);
+}
+function mousemoved() {
+  info.text(formatLocation(projection.invert(d3.mouse(this)), projection.scale()));
+}
+function formatLocation(p, k) {
+  var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
+  return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
+       + (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
+}
+<\/script>
+<ul class="legend">
+    <li><span class="Deadly"></span> deadly</li>
+    <li><span class="High"></span> high</li>
+    <li><span class="Medium"></span> medium</li>
+    <li><span class="Low"></span> low</li>
+</ul>
+</script>
+
+<script id="jsbin-source-css" type="text/css">* basic positioning */
+.legend { list-style: none; }
+.legend li { float: left; margin-right: 10px; }
+.legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+/* your colors */
+.legend .Deadly { background-color: crimson; }
+.legend .High { background-color: yellow; }
+.legend .Medium { background-color: blue; }
+.legend .Low { background-color: green; }
+</script>
+Raw
+ jsbin.yenope.css
+* basic positioning */
+.legend { list-style: none; }
+.legend li { float: left; margin-right: 10px; }
+.legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+/* your colors */
+.legend .Deadly { background-color: crimson; }
+.legend .High { background-color: yellow; }
+.legend .Medium { background-color: blue; }
+.legend .Low { background-color: green; }
+ @MTClass
+  
+            
+ 
+Write  Preview
+
+Leave a comment
+Attach files by dragging & dropping,  Choose Files selecting them, or pasting from the clipboard.
+ Styling with Markdown is s
